@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Checkers — Basic</title>
+  <style>
+    :root{--dark:#1f2937;--light:#f8fafc;--red:#ef4444;--black:#111827;--board1:#d6a86a;--board2:#5a3016}
+    body{font-family:Inter,Arial,Helvetica,sans-serif;background:#f3f4f6;color:var(--dark);margin:18px}
+    .wrap{max-width:780px;margin:0 auto}
+    h1{color:var(--black);margin:6px 0}
+    .top{display:flex;gap:12px;align-items:center}
+    #board{border-collapse:collapse;margin-top:12px}
+    #board td{width:64px;height:64px;padding:0;position:relative}
+    .sq{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+    .light{background:var(--board1)}
+    .dark{background:var(--board2)}
+    .piece{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:0 4px 10px rgba(2,6,23,0.2);cursor:pointer}
+    .piece.red{background:#ef4444}
+    .piece.black{background:#111827}
+    .king::after{content:"K";font-size:12px;margin-left:6px}
+    .selected{outline:3px solid rgba(99,102,241,0.25);transform:translateY(-4px)}
+    .hint{box-shadow:inset 0 0 0 3px rgba(34,197,94,0.12)}
+    .controls{margin-left:auto;display:flex;gap:8px}
+    button{padding:8px 10px;border-radius:8px;border:none;background:#374151;color:white;cursor:pointer}
+    .info{margin-top:10px;color:#475569}
+    @media (max-width:640px){#board td{width:40px;height:40px}.piece{width:30px;height:30px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Basic Checkers</h1>
+        <div class="info">Play locally: red starts. Click a piece then an allowed destination to move or capture.</div>
+      </div>
+      <div class="controls">
+        <button id="newBtn">New Game</button>
+        <button id="flipBtn">Flip Turn</button>
+      </div>
+    </div>
+
+    <table id="board"></table>
+
+    <div style="margin-top:12px">
+      <strong>Turn:</strong> <span id="turnLabel">Red</span>
+      <span style="margin-left:12px">Last move: <span id="lastMove">—</span></span>
+    </div>
+  </div>
+
+  <script>
+    // Simple two-player checkers (local play). Rules: diagonal moves, single jumps capture, multiple jumps supported by repeated selection.
+    const ROWS = 8, COLS = 8;
+    const boardEl = document.getElementById('board');
+    const turnLabel = document.getElementById('turnLabel');
+    const lastMove = document.getElementById('lastMove');
+
+    // board matrix: null or {color:'red'|'black', king:boolean}
+    let board = [];
+    let turn = 'red'; // red starts
+    let selected = null; // {r,c}
+
+    function makeEmptyBoard(){ board = Array.from({length:ROWS},()=>Array(COLS).fill(null)); }
+
+    function setupPieces(){ // standard starting layout
+      makeEmptyBoard();
+      for(let r=0;r<3;r++){
+        for(let c=0;c<COLS;c++) if((r+c)%2===1) board[r][c] = {color:'black',king:false};
+      }
+      for(let r=5;r<8;r++){
+        for(let c=0;c<COLS;c++) if((r+c)%2===1) board[r][c] = {color:'red',king:false};
+      }
+    }
+
+    function render(){
+      boardEl.innerHTML = '';
+      for(let r=0;r<ROWS;r++){
+        const tr = document.createElement('tr');
+        for(let c=0;c<COLS;c++){
+          const td = document.createElement('td');
+          const sq = document.createElement('div');
+          sq.className = 'sq '+(((r+c)%2===0)?'light':'dark');
+          td.appendChild(sq);
+          td.addEventListener('click', ()=>onSquareClick(r,c));
+          const p = board[r][c];
+          if(p){
+            const el = document.createElement('div'); el.className='piece '+p.color+(p.king? ' king':''); el.textContent = '';
+            if(selected && selected.r===r && selected.c===c) el.classList.add('selected');
+            sq.appendChild(el);
+          }
+          tr.appendChild(td);
+        }
+        boardEl.appendChild(tr);
+      }
+      turnLabel.textContent = capitalize(turn);
+    }
+
+    function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+    function inBounds(r,c){ return r>=0 && r<ROWS && c>=0 && c<COLS; }
+
+    function getMoves(r,c){
+      const p = board[r][c]; if(!p) return [];
+      const dirs = [];
+      if(p.color==='red' || p.king) { dirs.push([-1,-1],[-1,1]); }
+      if(p.color==='black' || p.king) { dirs.push([1,-1],[1,1]); }
+      const moves = [];
+      // simple moves
+      for(const [dr,dc] of dirs){ const nr=r+dr, nc=c+dc; if(inBounds(nr,nc) && !board[nr][nc]) moves.push({r:nr,c:nc,capture:false}); }
+      // captures
+      for(const [dr,dc] of dirs){ const mr=r+dr, mc=c+dc, nr=r+dr*2, nc=c+dc*2; if(inBounds(nr,nc) && board[mr] && board[mr][mc] && board[mr][mc].color !== p.color && !board[nr][nc]) moves.push({r:nr,c:nc,capture:{r:mr,c:mc}}); }
+      return moves;
+    }
+
+    function clearHints(){ Array.from(document.querySelectorAll('.hint')).forEach(x=>x.classList.remove('hint')); }
+
+    function highlightMoves(moves){ // find td's and add hint
+      const rows = boardEl.rows;
+      moves.forEach(m=>{ const td = rows[m.r].cells[m.c]; if(td) td.firstChild.classList.add('hint'); });
+    }
+
+    function onSquareClick(r,c){ const piece = board[r][c];
+      if(selected){ // if selected piece, try to move
+        const moves = getMoves(selected.r, selected.c);
+        const match = moves.find(m=>m.r===r && m.c===c);
+        if(match){ performMove(selected, {r,c}, match.capture); selected=null; clearHints(); render(); return; }
+        // select another piece if same color
+        if(piece && piece.color===turn){ selected={r,c}; clearHints(); highlightMoves(getMoves(r,c)); render(); return; }
+        // otherwise clear selection
+        selected=null; clearHints(); render(); return;
+      }
+      // nothing selected: select if piece of current player's color
+      if(piece && piece.color===turn){ selected={r,c}; clearHints(); highlightMoves(getMoves(r,c)); render(); }
+    }
+
+    function performMove(from, to, capture){
+      const p = board[from.r][from.c];
+      board[to.r][to.c] = p; board[from.r][from.c] = null;
+      if(capture){ board[capture.r][capture.c] = null; lastMove.textContent = `${capitalize(p.color)} captured at ${capture.r},${capture.c}`; }
+      else lastMove.textContent = `${capitalize(p.color)} moved to ${to.r},${to.c}`;
+      // kinging
+      if(p.color==='red' && to.r===0) p.king=true;
+      if(p.color==='black' && to.r===ROWS-1) p.king=true;
+      // switch turn
+      turn = (turn==='red')? 'black' : 'red';
+      selected=null; clearHints(); render();
+    }
+
+    document.getElementById('newBtn').addEventListener('click', ()=>{ if(confirm('Start new game?')){ setupPieces(); turn='red'; selected=null; lastMove.textContent='—'; clearHints(); render(); } });
+    document.getElementById('flipBtn').addEventListener('click', ()=>{ turn = (turn==='red')? 'black':'red'; render(); });
+
+    // initialize
+    setupPieces(); render();
+  </script>
+</body>
+</html>
