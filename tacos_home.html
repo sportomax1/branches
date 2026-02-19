@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tacos — Home</title>
+    <style>
+      body{font-family:Inter,system-ui,Arial;margin:24px;background:#fff8f0;color:#111}
+      header{display:flex;justify-content:space-between;align-items:center}
+      nav a{margin-left:12px;text-decoration:none;color:#b91c1c;font-weight:600}
+      .hero{margin-top:18px}
+      .cards{display:flex;gap:12px;margin-top:18px}
+      .card{padding:12px;border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,0.06);flex:1}
+      button{background:#b91c1c;color:#fff;border:none;padding:8px 10px;border-radius:8px;cursor:pointer}
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>🌮 Taco Fiesta — Home</h1>
+      <nav>
+        <a href="tacos_home.html">Home</a>
+        <a href="ingredients.html">Ingredients</a>
+        <a href="recipes.html">Recipes</a>
+        <a href="regional.html">Regional</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <p>Welcome! Explore Mexican food — quick links below. Click a card for a fun fact.</p>
+      <div class="cards">
+        <div class="card"><strong>What is a taco?</strong><p>Folded tortilla with fillings.</p><button onclick="alert('Tacos date back to indigenous Mexico — tortillas were used as edible vessels! 🌽')">Fun fact</button></div>
+        <div class="card"><strong>Serving</strong><p>Serve with lime, salsa, cilantro.</p><button onclick="alert('A squeeze of lime brightens flavors — try different salsas! 🍋')">Tip</button></div>
+        <div class="card"><strong>Try it</strong><p>Mix meats, seafood, or veg.</p><button onclick="alert('Start simple: carne asada or al pastor are classic choices. 🔥')">Try</button></div>
+      </div>
+    </section>
+  </body>
+</html>
