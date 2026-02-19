@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GitHub Teacher — From Zero to Power User</title>
+  <style>
+    body{font-family:Inter,system-ui,Arial;margin:0;background:#f7fafc;color:#0f1724}
+    .wrap{max-width:980px;margin:26px auto;padding:20px}
+    header{display:flex;align-items:center;gap:16px}
+    h1{margin:0;color:#0f1724}
+    h2{color:#0b63b5}
+    .chapter{background:#fff;padding:16px;margin-top:12px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.06)}
+    .analogy{font-style:italic;color:#475569}
+    .quiz{margin-top:12px;border-top:1px dashed #eef2f7;padding-top:12px}
+    .q{margin:8px 0}
+    button{background:#0b63b5;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .small{font-size:13px;color:#6b7280}
+    .answer{margin-top:6px;color:#065f46;font-weight:700}
+    .controls{display:flex;gap:8px;margin-top:12px}
+    .toc{margin-top:8px}
+    .toc a{display:inline-block;margin-right:10px;color:#0b63b5;text-decoration:none}
+    pre{background:#0f172424;padding:8px;border-radius:6px;overflow:auto}
+  </style>
+  <script>
+    // simple quiz helpers
+    function reveal(id){ document.getElementById(id).style.display='block'; }
+    function check(qid, correctIndex){
+      const radios = document.getElementsByName(qid);
+      let chosen = -1; for(let i=0;i<radios.length;i++) if(radios[i].checked) chosen=i;
+      const out = document.getElementById(qid+'-out');
+      if(chosen===-1){ out.textContent = 'Please select an answer.'; out.style.color='#b45309'; return; }
+      if(chosen===correctIndex){ out.textContent = 'Correct ✅'; out.style.color='#065f46'; }
+      else { out.textContent = 'Not correct — review the explanation below.'; out.style.color='#b91c1c'; }
+      reveal(qid+'-exp');
+    }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header><h1>GitHub Teacher</h1><div style="margin-left:auto" class="small">Starts easy → gets harder (quizzes included)</div></header>
+    <p class="small">A structured, hands-on set of chapters about GitHub: what it is, why it exists, and how to use its features effectively. Each chapter includes an analogy and a short quiz.</p>
+
+    <div class="toc small">Table of contents: <a href="#c1">1.Start</a> <a href="#c2">2.Repos</a> <a href="#c3">3.Commits</a> <a href="#c4">4.Branches</a> <a href="#c5">5.Pull Requests</a> <a href="#c6">6.Issues</a> <a href="#c7">7.Collaboration</a> <a href="#c8">8.Actions</a> <a href="#c9">9.Security</a> <a href="#c10">10.Releases</a> <a href="#c11">11.Advanced</a></div>
+
+    <!-- Chapter 1 -->
+    <section id="c1" class="chapter">
+      <h2>Chapter 1 — What is GitHub? (Beginner)</h2>
+      <p>GitHub is a platform for hosting code and collaborating on projects. Think of it as a digital library and workshop combined: it stores the history of your work and gives tools for people to work together without stepping on each other's toes.</p>
+      <p class="analogy">Analogy: GitHub is like a public library where each book (repository) has a log book (commits) showing who changed what and when.</p>
+      <div class="quiz">
+        <div class="q">Q1.1 — Which statement best describes GitHub?</div>
+        <label><input type="radio" name="q1-1"> A hosting service for code and collaborative workflows</label><br>
+        <label><input type="radio" name="q1-1"> A programming language</label><br>
+        <label><input type="radio" name="q1-1"> An operating system</label>
+        <div class="controls"><button onclick="check('q1-1',0)">Check</button></div>
+        <div id="q1-1-out" class="small"></div>
+        <div id="q1-1-exp" class="answer" style="display:none">GitHub hosts repositories, enables collaboration via Git, and adds features like pull requests and issues.</div>
+      </div>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section id="c2" class="chapter">
+      <h2>Chapter 2 — Repositories (Beginner)</h2>
+      <p>A repository (repo) is a project container — files, history, and configuration. You can create repositories publicly or privately.</p>
+      <p class="analogy">Analogy: A repo is a workshop bench — it holds the parts, tools, and notes for one project.</p>
+      <div class="quiz">
+        <div class="q">Q2.1 — What does a repository contain?</div>
+        <label><input type="radio" name="q2-1"> Files and their history</label><br>
+        <label><input type="radio" name="q2-1"> Only binary executables</label><br>
+        <label><input type="radio" name="q2-1"> Only issues</label>
+        <div class="controls"><button onclick="check('q2-1',0)">Check</button></div>
+        <div id="q2-1-out" class="small"></div>
+        <div id="q2-1-exp" class="answer" style="display:none">A repo stores project files plus their full change history managed by Git.</div>
+      </div>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section id="c3" class="chapter">
+      <h2>Chapter 3 — Commits & History (Beginner → Intermediate)</h2>
+      <p>A commit is a snapshot of changes with a message. Good commit messages explain the 'why', not just the 'what'.</p>
+      <p class="analogy">Analogy: Commits are like diary entries recording what you changed and why — they help future you (and others) understand decisions.</p>
+      <div class="quiz">
+        <div class="q">Q3.1 — Which is a good commit message?</div>
+        <label><input type="radio" name="q3-1"> "Fix"</label><br>
+        <label><input type="radio" name="q3-1"> "Add user login validation to prevent empty passwords"</label><br>
+        <label><input type="radio" name="q3-1"> "Stuff"</label>
+        <div class="controls"><button onclick="check('q3-1',1)">Check</button></div>
+        <div id="q3-1-out" class="small"></div>
+        <div id="q3-1-exp" class="answer" style="display:none">Descriptive messages make history navigable and help reviewers understand intent.</div>
+      </div>
+    </section>
+
+    <!-- Chapter 4 -->
+    <section id="c4" class="chapter">
+      <h2>Chapter 4 — Branching (Intermediate)</h2>
+      <p>Branches let you work on features independently. The default branch is often called <code>main</code> or <code>master</code>.</p>
+      <p class="analogy">Analogy: Branches are like parallel workbenches — you can experiment on one without disturbing the main product.</p>
+      <div class="quiz">
+        <div class="q">Q4.1 — Why use branches?</div>
+        <label><input type="radio" name="q4-1"> To isolate work and make merging safer</label><br>
+        <label><input type="radio" name="q4-1"> To delete the repo</label><br>
+        <label><input type="radio" name="q4-1"> To change the license</label>
+        <div class="controls"><button onclick="check('q4-1',0)">Check</button></div>
+        <div id="q4-1-out" class="small"></div>
+        <div id="q4-1-exp" class="answer" style="display:none">Branches enable safe feature development and code review workflows.</div>
+      </div>
+    </section>
+
+    <!-- Chapter 5 -->
+    <section id="c5" class="chapter">
+      <h2>Chapter 5 — Pull Requests & Code Review (Intermediate)</h2>
+      <p>Pull requests (PRs) propose changes from one branch to another and provide a place for discussion and automated checks.</p>
+      <p class="analogy">Analogy: A PR is like a politely worded letter asking a teammate to merge your improvements into the main product, with room for comments and edits.</p>
+      <div class="quiz">
+        <div class="q">Q5.1 — What happens in a PR?</div>
+        <label><input type="radio" name="q5-1"> Discussion, automated tests, and merging after approval</label><br>
+        <label><input type="radio" name="q5-1"> Automatic deletion of the repository</label><br>
+        <label><input type="radio" name="q5-1"> Running code in production immediately</label>
+        <div class="controls"><button onclick="check('q5-1',0)">Check</button></div>
+        <div id="q5-1-out" class="small"></div>
+        <div id="q5-1-exp" class="answer" style="display:none">A PR bundles code changes for review and continuous-integration checks before merge.</div>
+      </div>
+    </section>
+
+    <!-- Chapter 6 -->
+    <section id="c6" class="chapter">
+      <h2>Chapter 6 — Issues, Labels & Project Boards (Intermediate)</h2>
+      <p>Issues track tasks, bugs, and ideas. Labels and projects help prioritize and organize work.</p>
+      <p class="analogy">Analogy: Issues are sticky notes on a Kanban board; labels are colors that tell you what's important or urgent.</p>
+      <div class="quiz">
+        <div class="q">Q6.1 — What is the best use for an issue?</div>
+        <label><input type="radio" name="q6-1"> Track a bug or feature request</label><br>
+        <label><input type="radio" name="q6-1"> Store binary files</label><br>
+        <label><input type="radio" name="q6-1"> Replace commits</label>
+        <div class="controls"><button onclick="check('q6-1',0)">Check</button></div>
+        <div id="q6-1-out" class="small"></div>
+        <div id="q6-1-exp" class="answer" style="display:none">Issues are for tracking work, not for holding the code itself.</div>
+      </div>
+    </section>
+
+    <!-- Chapter 7 -->
+    <section id="c7" class="chapter">
+      <h2>Chapter 7 — Forks, Upstreams & Open Source (Intermediate → Advanced)</h2>
+      <p>Forks create a copy of a repository in your account so you can contribute to projects you don't control; upstream remote keeps your fork in sync with the original.</p>
+      <p class="analogy">Analogy: Forking is like copying a recipe to your own notebook so you can change it; you can later suggest those changes back to the original chef.</p>
+      <div class="quiz">
+        <div class="q">Q7.1 — Why fork a repository?</div>
+        <label><input type="radio" name="q7-1"> To propose contributions when you don't have write access</label><br>
+        <label><input type="radio" name="q7-1"> To permanently delete the original</label><br>
+        <label><input type="radio" name="q7-1"> To hide the project</label>
+        <div class="controls"><button onclick="check('q7-1',0)">Check</button></div>
+        <div id="q7-1-out" class="small"></div>
+        <div id="q7-1-exp" class="answer" style="display:none">Forks enable contributions and experimentation without needing permissions on the original repository.</div>
+      </div>
+    </section>
+
+    <!-- Chapter 8 -->
+    <section id="c8" class="chapter">
+      <h2>Chapter 8 — GitHub Actions & CI/CD (Advanced)</h2>
+      <p>Actions let you automate tasks: run tests on PRs, build artifacts, and deploy when code is merged.</p>
+      <p class="analogy">Analogy: Actions are factory machines that automatically test and package whatever you produce on the assembly line.</p>
+      <div class="quiz">
+        <div class="q">Q8.1 — What can Actions do?</div>
+        <label><input type="radio" name="q8-1"> Run tests, build, and deploy automatically</label><br>
+        <label><input type="radio" name="q8-1"> Replace Git entirely</label><br>
+        <label><input type="radio" name="q8-1"> Only format images</label>
+        <div class="controls"><button onclick="check('q8-1',0)">Check</button></div>
+        <div id="q8-1-out" class="small"></div>
+        <div id="q8-1-exp" class="answer" style="display:none">Actions provide a programmable workflow runner integrated with GitHub events.</div>
+      </div>
+    </section>
+
+    <!-- Chapter 9 -->
+    <section id="c9" class="chapter">
+      <h2>Chapter 9 — Security, Permissions & Code Scanning (Advanced)</h2>
+      <p>GitHub provides role-based access, branch protection, dependabot alerts, and code-scanning to keep projects secure.</p>
+      <p class="analogy">Analogy: Think of branch protection as a lock on a safe — only after certain checks (tests, reviews) can it be opened (merged).</p>
+      <div class="quiz">
+        <div class="q">Q9.1 — What does branch protection do?</div>
+        <label><input type="radio" name="q9-1"> Enforce required reviews and pass checks before merging</label><br>
+        <label><input type="radio" name="q9-1"> Automatically delete branches</label><br>
+        <label><input type="radio" name="q9-1"> Disable Git</label>
+        <div class="controls"><button onclick="check('q9-1',0)">Check</button></div>
+        <div id="q9-1-out" class="small"></div>
+        <div id="q9-1-exp" class="answer" style="display:none">Protected branches help enforce quality gates like CI passing and required reviewers.</div>
+      </div>
+    </section>
+
+    <!-- Chapter 10 -->
+    <section id="c10" class="chapter">
+      <h2>Chapter 10 — Releases, Packages & GitHub Pages (Advanced)</h2>
+      <p>Use Releases to publish versioned artifacts, Packages to host binaries, and Pages to publish a static site from a repo.</p>
+      <p class="analogy">Analogy: Releases are product launches; Packages are your store inventory; Pages is your shop window on the web.</p>
+      <div class="quiz">
+        <div class="q">Q10.1 — What is GitHub Pages used for?</div>
+        <label><input type="radio" name="q10-1"> Hosting static websites directly from a repo</label><br>
+        <label><input type="radio" name="q10-1"> Running database servers</label><br>
+        <label><input type="radio" name="q10-1"> Managing access tokens</label>
+        <div class="controls"><button onclick="check('q10-1',0)">Check</button></div>
+        <div id="q10-1-out" class="small"></div>
+        <div id="q10-1-exp" class="answer" style="display:none">Pages serves static content (HTML/CSS/JS) directly from a branch or docs folder.</div>
+      </div>
+    </section>
+
+    <!-- Chapter 11 -->
+    <section id="c11" class="chapter">
+      <h2>Chapter 11 — Advanced Workflows & Governance (Expert)</h2>
+      <p>Topics: monorepos, submodules, semantic versioning, changelogs, protected environments, and required status checks.</p>
+      <p class="analogy">Analogy: Governance is the company policy that defines who can sign off on launches and who can change the accounting books.</p>
+      <div class="quiz">
+        <div class="q">Q11.1 — Which practice helps keep releases predictable?</div>
+        <label><input type="radio" name="q11-1"> Semantic versioning and release notes</label><br>
+        <label><input type="radio" name="q11-1"> Random branching</label><br>
+        <label><input type="radio" name="q11-1"> Deleting tags frequently</label>
+        <div class="controls"><button onclick="check('q11-1',0)">Check</button></div>
+        <div id="q11-1-out" class="small"></div>
+        <div id="q11-1-exp" class="answer" style="display:none">Semantic versioning (MAJOR.MINOR.PATCH) combined with changelogs improves predictability.</div>
+      </div>
+    </section>
+
+    <section class="chapter">
+      <h2>Next Steps & Practice</h2>
+      <ol>
+        <li>Create a personal GitHub account and a small repo.</li>
+        <li>Make commits and write clear messages.</li>
+        <li>Create a branch, add a feature, and open a pull request.</li>
+        <li>Set up one simple GitHub Action to run a test or lint check.</li>
+      </ol>
+      <p class="small">Want interactive exercises or a downloadable cheat sheet? Ask and I can add them to this file.</p>
+    </section>
+  </div>
+</body>
+</html>
