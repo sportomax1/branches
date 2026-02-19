@@ -3,18 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Hello — Single-file SPA</title>
+    <title>All About Dolphins — Single-file SPA</title>
     <style>
-      :root{--bg:#0f1724;--card:#0b1220;--accent:#38bdf8;--muted:#94a3b8}
-      html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:#e6eef8;background:linear-gradient(180deg,#071027 0%,#071a2a 100%)}
-      .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:48px}
-      .card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);padding:28px;border-radius:12px;max-width:740px;width:100%;box-shadow:0 6px 30px rgba(2,6,23,0.6)}
-      h1{margin:0 0 8px;font-size:28px;color:var(--accent)}
-      p{margin:0 0 16px;color:var(--muted)}
-      nav{margin-top:18px}
-      a{color:#9be7ff;text-decoration:none;padding:6px 10px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.002));border:1px solid rgba(255,255,255,0.02)}
-      .footer{margin-top:18px;font-size:13px;color:#7b8aa0}
-      code{background:rgba(255,255,255,0.02);padding:4px 6px;border-radius:6px}
+      :root{--bg:#e6f7ff;--card:#ffffff;--accent:#047857;--muted:#475569}
+      html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;color:#0f1724;background:linear-gradient(180deg,#dff6ff 0%,#e6fbff 100%)}
+      .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:36px}
+      .card{background:var(--card);border:1px solid #e6f0f6;padding:26px;border-radius:12px;max-width:820px;width:100%;box-shadow:0 8px 30px rgba(12,34,56,0.06)}
+      h1{margin:0 0 8px;font-size:30px;color:var(--accent)}
+      h2{margin:18px 0 6px;color:#0f1724}
+      p{margin:0 0 12px;color:var(--muted);line-height:1.5}
+      nav{margin-top:12px}
+      a{color:var(--accent);text-decoration:none;margin-right:10px}
+      .footer{margin-top:18px;font-size:13px;color:#64748b}
+      ul{margin:8px 0 0;padding-left:20px;color:var(--muted)}
+      .badge{display:inline-block;margin-left:8px;background:#eefafa;color:#024; padding:4px 8px;border-radius:999px;font-size:12px}
     </style>
   </head>
   <body>
@@ -23,32 +25,44 @@
     </div>
 
     <script>
-      // Very small single-file SPA (hash-based routing)
+      // Tiny single-file SPA with two routes: home and dolphins
       const routes = {
         '': () => `
-          <h1>Hello, world! 👋</h1>
-          <p>This is a minimal <strong>single-file</strong> SPA — HTML, CSS and JavaScript all in one file.</p>
+          <h1>Welcome — Learn About Dolphins 🐬</h1>
+          <p>Dolphins are intelligent, social marine mammals known for their playful behavior and high learning capacity.</p>
           <nav>
             <a href="#/">Home</a>
-            <span style="margin:0 8px;color:var(--muted)">|</span>
-            <a href="#/about">About</a>
+            <a href="#/dolphins">Dolphin Facts</a>
           </nav>
-          <div class="footer">Open <code>index.html</code> in a browser or drop this file into any static host.</div>
+          <div class="footer">This is a single-file SPA. Use the links above to navigate.</div>
         `,
-        'about': () => `
-          <h1>About</h1>
-          <p>This demo shows client-side routing without frameworks — all inside a single HTML file.</p>
+        'dolphins': () => `
+          <h1>About Dolphins <span class="badge">Fun Facts</span></h1>
+          <p><strong>Who they are:</strong> Dolphins belong to the family Delphinidae and are relatives of whales and porpoises.</p>
+          <h2>Habitat</h2>
+          <p>They live in oceans and some species live in rivers; commonly found in shallow seas of the continental shelves.</p>
+          <h2>Behavior</h2>
+          <ul>
+            <li>Highly social — live in pods (groups).</li>
+            <li>Use echolocation to find food and navigate.</li>
+            <li>Show complex play, teaching, and cooperative hunting.</li>
+          </ul>
+          <h2>Interesting Facts</h2>
+          <ul>
+            <li>They can recognize themselves in mirrors (a sign of self-awareness).</li>
+            <li>Some species can swim over 20 mph (32 kph).</li>
+            <li>Communication includes clicks, whistles, and body language.</li>
+          </ul>
           <nav>
             <a href="#/">Home</a>
-            <span style="margin:0 8px;color:var(--muted)">|</span>
-            <a href="#/about">About</a>
+            <a href="#/dolphins">Dolphin Facts</a>
           </nav>
-          <div class="footer">Hash route: <code>#/about</code></div>
+          <div class="footer">Hash route: <code>#/dolphins</code></div>
         `
       };
 
       function render() {
-        const key = location.hash.replace(/^#\/?/, '') ;
+        const key = location.hash.replace(/^#\/?/, '');
         const view = (routes[key] || routes[''])();
         document.getElementById('app').innerHTML = view;
       }
