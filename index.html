@@ -3,96 +3,34 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Ghosts — Interactive Guide</title>
-    <style>
-      :root{
-        --bg:#0b1020;--card:#0f1724;--muted:#9aa6b2;--accent:#7dd3fc;--glass:rgba(255,255,255,0.03);
-      }
-      *{box-sizing:border-box}
-      html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;color:var(--muted);background:linear-gradient(180deg,#020617 0%,#081226 60%)}
-      .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:28px}
-      .card{background:linear-gradient(180deg,var(--card),#061020);border-radius:14px;padding:20px;max-width:1100px;width:100%;box-shadow:0 10px 40px rgba(2,6,23,0.7);border:1px solid rgba(255,255,255,0.03)}
-      header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-      .brand{display:flex;align-items:center;gap:12px}
-      .logo{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#0ea5e9,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:22px;color:white;box-shadow:0 6px 18px rgba(124,58,237,0.2)}
-      h1{margin:0;font-size:20px;color:var(--accent)}
-      .controls{display:flex;gap:8px;align-items:center}
-      .search{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:var(--glass);color:var(--muted);width:260px}
-      .toggle{padding:6px 10px;border-radius:999px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);cursor:pointer}
-      .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px}
-      .ghost{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);backdrop-filter:blur(6px)}
-      .emoji{font-size:28px}
-      .name{font-weight:700;color:#e6f6ff;margin-left:8px}
-      .desc{color:var(--muted);font-size:13px;margin-top:8px}
-      .tag{display:inline-block;margin-top:10px;padding:6px 10px;border-radius:999px;background:rgba(125,211,252,0.08);color:var(--accent);font-size:12px}
-      footer{margin-top:16px;color:#6b7280;font-size:13px}
-      @media (max-width:640px){.search{width:140px}}
-    </style>
+    <title>Ghosts — Guide</title>
+    <link rel="stylesheet" href="ghosts.css">
   </head>
   <body>
     <div class="wrap">
-      <main class="card" id="app" role="main" aria-live="polite"></main>
+      <main class="card" id="app" role="main">
+        <header class="site-header">
+          <div class="brand"><div class="logo">GH</div><div class="titles"><h1>Ghosts</h1><p class="subtitle">Folklore • Science • Stories</p></div></div>
+          <nav class="nav"><a href="#">Home</a> <a href="#info">About</a></nav>
+        </header>
+
+        <section class="hero">
+          <h2>Explore Common Ghost Types</h2>
+          <p class="lead">A concise guide — browse card entries below, use the search, or click a card for details.</p>
+          <div class="controls"><input id="search" class="search" placeholder="Search ghosts by name or tag..."><button id="reset" class="btn">Reset</button></div>
+        </section>
+
+        <section id="grid" class="grid" aria-live="polite"></section>
+
+        <section id="about" class="about">
+          <h3>About this guide</h3>
+          <p>Summarized from folklore and scientific perspectives. This page is static HTML + CSS + JS (three files).</p>
+        </section>
+
+        <footer class="site-footer">Made with ❤️ — Ghosts guide</footer>
+      </main>
     </div>
 
-    <script>
-      // Improved Ghosts single-file SPA with interactive UI
-      const ghosts = [
-        {name:'Friendly Spook', emoji:'👻', tag:'legend', desc:'Gentle apparitions often blamed for small mischief.'},
-        {name:'Poltergeist', emoji:'🔔', tag:'noisy', desc:'Associated with objects moving, loud noises, and short-lived activity.'},
-        {name:'Residual Haunting', emoji:'🌫️', tag:'residual', desc:'Repeating impressions of past events; not aware of living people.'},
-        {name:'Shadow Person', emoji:'🕶️', tag:'shadow', desc:'Dark, humanoid shapes often seen peripherally.'},
-        {name:'Apparition', emoji:'✨', tag:'sighting', desc:'Full-bodied ghostly image reported in many traditions.'},
-        {name:'Crisis Apparition', emoji:'⚠️', tag:'crisis', desc:'Reported simultaneous sightings linked to major life events.'},
-        {name:'Ancestor Spirit', emoji:'🕯️', tag:'ancestral', desc:'Spirits seen as protectors or messengers in many cultures.'}
-      ];
-
-      function mkHome(){
-        return `
-          <header>
-            <div class="brand"><div class="logo">GH</div><div><h1>Ghosts — Interactive Guide</h1><div style="font-size:12px;color:var(--muted)">Folklore · Science · Media</div></div></div>
-            <div class="controls"><input id="search" class="search" placeholder="Search ghosts..." aria-label="Search ghosts"><button id="mode" class="toggle">Toggle Theme</button></div>
-          </header>
-          <section>
-            <p style="margin:10px 0 0;color:var(--muted)">Explore common ghost types, cultural perspectives, and scientific explanations. Filter the list or click a card for details.</p>
-            <div id="grid" class="grid"></div>
-          </section>
-          <footer>Sources: folklore, psychology, and cultural studies (summary).</footer>
-        `;
-      }
-
-      function showGrid(list){
-        const grid = document.getElementById('grid');
-        grid.innerHTML = list.map(g => `
-          <article class="ghost" tabindex="0" role="button" data-name="${g.name}">
-            <div style="display:flex;align-items:center"><div class="emoji">${g.emoji}</div><div class="name">${g.name}</div></div>
-            <div class="desc">${g.desc}</div>
-            <div class="tag">${g.tag}</div>
-          </article>
-        `).join('');
-        grid.querySelectorAll('.ghost').forEach(el => {
-          el.addEventListener('click', ()=> alert(el.dataset.name + '\n\n' + el.querySelector('.desc').innerText));
-        });
-      }
-
-      function init(){
-        document.getElementById('app').innerHTML = mkHome();
-        const search = document.getElementById('search');
-        showGrid(ghosts);
-        search.addEventListener('input', ()=>{
-          const q = search.value.trim().toLowerCase();
-          if(!q) return showGrid(ghosts);
-          const filtered = ghosts.filter(g => (g.name + g.desc + g.tag).toLowerCase().includes(q));
-          showGrid(filtered);
-        });
-        document.getElementById('mode').addEventListener('click', ()=>{
-          document.documentElement.style.setProperty('--card', document.documentElement.style.getPropertyValue('--card') === '#fff' ? '#0f1724' : '#fff');
-          // simple invert: toggle muted color
-          const muted = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() === '#9aa6b2' ? '#e6f6ff' : '#9aa6b2';
-          document.documentElement.style.setProperty('--muted', muted);
-        });
-      }
-
-      window.addEventListener('DOMContentLoaded', init);
-    </script>
+    <script src="ghosts.js"></script>
   </body>
 </html>
