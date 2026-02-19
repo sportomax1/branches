@@ -1,0 +1,22 @@
+/* Simple professional styles for Hearth & Bean */
+:root{--bg:#fbfbfc;--accent:#7c3aed;--muted:#6b7280;--card:#ffffff}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:#0f1724;background:var(--bg);-webkit-font-smoothing:antialiased}
+.container{max-width:1040px;margin:0 auto;padding:24px}
+.site-header{background:linear-gradient(90deg,#ffffffcc,#f7f7fb);border-bottom:1px solid #eef2f7}
+.site-header .container{display:flex;align-items:center;gap:16px}
+.brand a{font-weight:800;color:var(--accent);text-decoration:none;font-size:20px}
+nav{margin-left:auto;display:flex;gap:14px}
+nav a{color:var(--muted);text-decoration:none;padding:10px;border-radius:8px}
+nav a:hover{background:#f1f5f9;color:#0f1724}
+.hero{padding:80px 0;background:linear-gradient(180deg,#fff,#fbfbff)}
+.hero h1{margin:0;font-size:40px;color:var(--accent)}
+.lead{color:var(--muted);margin-top:8px}
+.btn{display:inline-block;margin-top:14px;padding:10px 16px;background:var(--accent);color:#fff;border-radius:10px;text-decoration:none}
+.info .cols{display:flex;gap:16px;margin-top:18px}
+.card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 8px 24px rgba(16,24,40,0.06);flex:1}
+.newsletter form{display:flex;gap:8px}
+.newsletter input{flex:1;padding:10px;border-radius:8px;border:1px solid #eef2f7}
+.site-footer{border-top:1px solid #eef2f7;padding:16px;margin-top:28px;color:var(--muted);font-size:14px}
+
+@media (max-width:900px){.info .cols{flex-direction:column}}
