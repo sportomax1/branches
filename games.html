@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Board Games — Reference</title>
+    <style>
+      :root{--bg:#fafafa;--card:#ffffff;--muted:#475569;--accent:#0ea5e9}
+      body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;background:var(--bg);color:#0f1724}
+      .wrap{max-width:1100px;margin:28px auto;padding:20px}
+      header{display:flex;justify-content:space-between;align-items:center}
+      h1{margin:0;font-size:22px;color:var(--accent)}
+      p.lead{margin:6px 0 0;color:var(--muted)}
+      .tools{display:flex;gap:8px;align-items:center;margin-top:14px}
+      .search{padding:8px 12px;border-radius:10px;border:1px solid #e6eef6;width:320px}
+      .select{padding:8px;border-radius:8px;border:1px solid #e6eef6}
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:18px}
+      .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.06);border:1px solid #eef2f6}
+      .title{display:flex;align-items:center;gap:10px}
+      .emoji{font-size:28px}
+      .meta{font-size:13px;color:var(--muted);margin-top:8px}
+      .desc{margin-top:10px;color:#344054}
+      .badge{display:inline-block;margin-top:10px;padding:6px 10px;border-radius:999px;background:#eef9ff;color:var(--accent);font-size:12px}
+      footer{margin-top:18px;color:#64748b;font-size:13px}
+      @media (max-width:640px){.search{width:160px}}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <h1>Board Games Reference 🎲</h1>
+          <p class="lead">Summaries of common tabletop games — players, playtime, complexity, mechanics.</p>
+        </div>
+        <div class="tools">
+          <input id="search" class="search" placeholder="Search games or mechanics..." aria-label="Search games">
+          <select id="filterPlayers" class="select"><option value="all">All players</option><option value="1">Solo</option><option value="2">2</option><option value="3">3</option><option value="4">4+</option></select>
+        </div>
+      </header>
+
+      <main id="grid" class="grid" role="list"></main>
+
+      <footer>Source: aggregated summaries for quick reference.</footer>
+    </div>
+
+    <script>
+      const GAMES = [
+        {name:'Chess', emoji:'♟️', players:'2', time:'30-120 min', complexity:'High', mechanics:['Abstract strategy','Grid movement'], desc:'Two-player abstract strategy game with perfect information; deep strategic depth.'},
+        {name:'Checkers', emoji:'⛸️', players:'2', time:'15-45 min', complexity:'Low', mechanics:['Abstract strategy','Capture'], desc:'Simpler than chess; diagonal movement and jumping to capture pieces.'},
+        {name:'Go', emoji:'⚪⚫', players:'2', time:'30-180+ min', complexity:'High', mechanics:['Abstract strategy','Area control'], desc:'Classic Asian board game focusing on territorial control and liberties.'},
+        {name:'Monopoly', emoji:'🏦', players:'2-8', time:'60-180 min', complexity:'Low', mechanics:['Roll & move','Trading','Economic'], desc:'Rolls and property management; long playtime and heavy player interaction.'},
+        {name:'Settlers of Catan', emoji:'🪨', players:'3-4', time:'60-120 min', complexity:'Medium', mechanics:['Resource management','Trading','Worker placement'], desc:'Players collect resources, build roads/settlements, and trade to score points.'},
+        {name:'Carcassonne', emoji:'🏰', players:'2-5', time:'30-45 min', complexity:'Low-Med', mechanics:['Tile placement','Area control'], desc:'Place tiles to build a medieval landscape and score with meeples.'},
+        {name:'Ticket to Ride', emoji:'🚆', players:'2-5', time:'30-60 min', complexity:'Low', mechanics:['Set collection','Route building'], desc:'Collect train cards to claim routes and complete destination tickets.'},
+        {name:'Scrabble', emoji:'🔤', players:'2-4', time:'50-90 min', complexity:'Medium', mechanics:['Word building','Tile placement'], desc:'Form words on a board using letter tiles with point values.'},
+        {name:'Risk', emoji:'🌍', players:'2-6', time:'120-240 min', complexity:'Medium', mechanics:['Area control','Dice combat'], desc:'Strategic conquest game with dice-based combat and troop movement.'},
+        {name:'Pandemic', emoji:'🩺', players:'2-4', time:'45-60 min', complexity:'Medium', mechanics:['Cooperative','Hand management'], desc:'Players cooperate to stop global outbreaks and find cures.'},
+        {name:'Azul', emoji:'🎨', players:'2-4', time:'30-45 min', complexity:'Low-Med', mechanics:['Pattern building','Drafting'], desc:'Draft tiles and place them to score patterns on your board.'},
+        {name:'Clue (Cluedo)', emoji:'🕵️', players:'3-6', time:'30-60 min', complexity:'Low', mechanics:['Deduction','Movement'], desc:'Deduce the murderer, weapon, and room by process of elimination.'},
+        {name:'Dominion', emoji:'🃏', players:'2-4', time:'30-60 min', complexity:'Medium', mechanics:['Deck building','Card combos'], desc:'Build a deck during play to gain victory points; many expansion options.'},
+        {name:'Codenames', emoji:'🕵️‍♀️', players:'2-8+', time:'15-30 min', complexity:'Low', mechanics:['Word association','Team play'], desc:'Give one-word clues to teammates to guess multiple words on the table.'},
+        {name:'Puerto Rico', emoji:'🏛️', players:'2-5', time:'90-150 min', complexity:'High', mechanics:['Role selection','Resource management'], desc:'Economic strategy with roles that grant powers and actions.'},
+        {name:'Gloomhaven (lite)', emoji:'🗺️', players:'1-4', time:'60-120 min', complexity:'High', mechanics:['Campaign','Tactical combat','Legacy'], desc:'Story-driven tactical combat with open-world campaign mechanics.'},
+        {name:'Scythe', emoji:'⚙️', players:'1-5', time:'90-120 min', complexity:'High', mechanics:['Area control','Resource management','Engine building'], desc:'Alternate-history strategy with asymmetric factions and engines.'},
+        {name:'Terraforming Mars', emoji:'🔴', players:'1-5', time:'120-150 min', complexity:'High', mechanics:['Card drafting','Engine building'], desc:'Players develop Mars using projects to raise parameters and score points.'},
+        {name:'Splendor', emoji:'💎', players:'2-4', time:'30 min', complexity:'Low-Med', mechanics:['Set collection','Engine building'], desc:'Collect gem tokens to buy cards and build a points engine.'}
+      ];
+
+      const grid = document.getElementById('grid');
+      const search = document.getElementById('search');
+      const filterPlayers = document.getElementById('filterPlayers');
+
+      function render(list){
+        grid.innerHTML = list.map(g=>`<article class="card" role="listitem">
+          <div class="title"><div class="emoji">${g.emoji}</div><div><strong>${g.name}</strong><div class="meta">Players: ${g.players} • Time: ${g.time} • Complexity: ${g.complexity}</div></div></div>
+          <div class="desc">${g.desc}</div>
+          <div class="badge">${g.mechanics.join(' · ')}</div>
+        </article>`).join('');
+      }
+
+      function matchesPlayers(g, p){
+        if(p==='all') return true;
+        if(p==='1') return g.players.includes('1');
+        if(p==='2') return g.players.startsWith('2') || g.players.includes('2-') || g.players.includes('2-');
+        if(p==='3') return g.players.startsWith('3') || g.players.includes('3-');
+        if(p==='4') return g.players.includes('4') || g.players.includes('5') || g.players.includes('6');
+        return true;
+      }
+
+      function filterAndRender(){
+        const q = (search.value||'').trim().toLowerCase();
+        const p = filterPlayers.value;
+        let out = GAMES.filter(g=>{
+          const text = (g.name+g.desc+g.mechanics.join(' ')).toLowerCase();
+          return text.includes(q) && matchesPlayers(g,p);
+        });
+        render(out);
+      }
+
+      search.addEventListener('input', filterAndRender);
+      filterPlayers.addEventListener('change', filterAndRender);
+
+      // initial
+      render(GAMES);
+    </script>
+  </body>
+</html>
